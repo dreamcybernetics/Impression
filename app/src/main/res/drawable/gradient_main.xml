@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <gradient
+                android:angle="45"
+                android:startColor="@color/wnd_background1"
+                android:endColor="@color/wnd_background2" />
+        </shape>
+    </item>
+    <item>
+        <bitmap  android:src="@drawable/img_background_main"
+            android:gravity="center" />
+    </item>
+</layer-list>

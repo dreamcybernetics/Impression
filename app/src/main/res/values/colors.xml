@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#36bf9d</color>
+    <color name="primary_dark">#0f896b</color>
+    <color name="accent">#22b97c</color>
+
+    <color name="wnd_background1">#dcf1ff</color>
+    <color name="wnd_background2">#65ffb1</color>
+
+    <color name="txt_dark">#646464</color>
+    <color name="txt_light">#999999</color>
+
+    <color name="item_background">#aad6ffda</color>
+    <color name="item_border">#0ae2c8</color>
+</resources>

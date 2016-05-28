@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+
+    <item android:id="@+id/miAddQuestion"
+        android:title="@string/menu_add"
+        android:icon="@android:drawable/ic_menu_add"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/miReset"
+        android:title="@string/menu_reset"
+        android:icon="@android:drawable/ic_menu_revert"
+        app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/miSave"
+        android:title="@string/menu_save"
+        android:icon="@android:drawable/ic_menu_save"
+        app:showAsAction="ifRoom"/>
+</menu>
