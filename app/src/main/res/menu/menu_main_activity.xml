@@ -4,16 +4,16 @@
 
     <item android:id="@+id/miAddPoll"
         android:title="@string/menu_add"
-        android:icon="@android:drawable/ic_menu_add"
+        android:icon="@drawable/ic_add"
         app:showAsAction="always"/>
 
     <item android:id="@+id/miViewFiles"
         android:title="@string/menu_view"
-        android:icon="@android:drawable/ic_menu_view"
+        android:icon="@drawable/ic_folder"
         app:showAsAction="ifRoom"/>
 
     <item android:id="@+id/miHelp"
         android:title="@string/menu_help"
-        android:icon="@android:drawable/ic_menu_help"
+        android:icon="@drawable/ic_help"
         app:showAsAction="ifRoom"/>
 </menu>

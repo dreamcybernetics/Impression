@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">Impression</string>
+
     <string name="title_poll">Poll</string>
     <string name="title_save_as">Save As HTML File</string>
+    <string name="title_view_file">View HTML File</string>
     <string name="title_view_files_list">Saved Files</string>
     <string name="title_about">About This App</string>
 
@@ -27,19 +29,20 @@
     <string name="btn_ok">OK</string>
     <string name="btn_cancel">Cancel</string>
 
-    <string name="msg_err_create_dir">can\'t create file</string>
+    <string name="msg_err_create_file">can\'t create file</string>
     <string name="msg_err_load_dir">can\'t read files</string>
     <string name="msg_done">done</string>
 
     <string name="txt_empty">(empty)</string>
     <string name="txt_add_datetime">add datetime</string>
+    <string name="txt_confirm_reset">Are you sure you want to reset all fields ?</string>
     <string name="txt_confirm_delete_file">Are you sure you want to delete this file ?</string>
     <string name="txt_confirm_delete_poll">Are you sure you want to delete %s ?</string>
     <string name="txt_confirm_delete_question">Are you sure you want to delete this question ?</string>
     <string name="txt_confirm_delete_option">Are you sure you want to delete this option ?</string>
     <string name="txt_version">version %s</string>
     <string name="txt_about">This application is for small questionnaires and it\'s very
-        handy for the journalists to make social surveys. It has simple and minimalistic
-        interface. After completing the questionnaire, save it as html file. Just use this
+        handy for the journalists or social survey interviewers to make social surveys. It has simple and minimalistic
+        interface. After completing the questionnaire, you can save it as html file.\nJust use this
         application instead of paper.</string>
 </resources>

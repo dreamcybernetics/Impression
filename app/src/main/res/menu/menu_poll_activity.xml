@@ -4,16 +4,16 @@
 
     <item android:id="@+id/miAddQuestion"
         android:title="@string/menu_add"
-        android:icon="@android:drawable/ic_menu_add"
+        android:icon="@drawable/ic_add"
         app:showAsAction="always"/>
-
-    <item android:id="@+id/miReset"
-        android:title="@string/menu_reset"
-        android:icon="@android:drawable/ic_menu_revert"
-        app:showAsAction="ifRoom"/>
 
     <item android:id="@+id/miSave"
         android:title="@string/menu_save"
-        android:icon="@android:drawable/ic_menu_save"
+        android:icon="@drawable/ic_save"
+        app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/miReset"
+        android:title="@string/menu_reset"
+        android:icon="@drawable/ic_refresh"
         app:showAsAction="ifRoom"/>
 </menu>

@@ -30,7 +30,8 @@
             android:label="@string/title_view_files_list" />
         <activity
             android:name=".ViewFileActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_view_file"/>
         <activity
             android:name=".AboutActivity"
             android:configChanges="orientation|screenSize"

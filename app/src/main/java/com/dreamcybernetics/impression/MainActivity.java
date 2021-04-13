@@ -1,10 +1,11 @@
 package com.dreamcybernetics.impression;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -17,7 +18,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
@@ -27,14 +27,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private TextView tvEmpty;
     private ListView lvPolls;
 
+    private ArrayAdapter<String> pollsAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tvEmpty = (TextView)findViewById(R.id.tvEmpty);
-
-        lvPolls = (ListView)findViewById(R.id.lvPolls);
+        tvEmpty = findViewById(R.id.tvEmpty);
+        lvPolls = findViewById(R.id.lvPolls);
         lvPolls.setOnItemClickListener(this);
         registerForContextMenu(lvPolls);
 
@@ -45,67 +46,53 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onDestroy() {
         DBHelper.closeDatabase();
-
         super.onDestroy();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main_activity, menu);
-
         return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.miAddPoll: {
-                addPoll();
-
-                return true;
-            }
-            case R.id.miViewFiles: {
-                startActivity(new Intent(this, ViewFilesListActivity.class));
-
-                return true;
-            }
-            case R.id.miHelp: {
-                startActivity(new Intent(this, AboutActivity.class));
-
-                return true;
-            }
-            default: {
-                return super.onOptionsItemSelected(item);
-            }
-        }
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         getMenuInflater().inflate(R.menu.context_menu_modify, menu);
-
         super.onCreateContextMenu(menu, v, menuInfo);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.miAddPoll) {
+            addPoll();
+            return true;
+        } else if (id == R.id.miViewFiles) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+                startActivity(new Intent(this, ViewFileActivity.class));
+            } else {
+                startActivity(new Intent(this, ViewFilesListActivity.class));
+            }
+            return true;
+        } else if (id == R.id.miHelp) {
+            startActivity(new Intent(this, AboutActivity.class));
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch (id) {
-            case R.id.miEdit: {
-                editPoll(((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).position);
-
-                return true;
-            }
-            case R.id.miDelete: {
-                removePoll(((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).position);
-
-                return true;
-            }
-            default: {
-                return super.onContextItemSelected(item);
-            }
+        if (id == R.id.miEdit) {
+            editPoll(((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).position);
+            return true;
+        } else if (id == R.id.miDelete) {
+            removePoll(((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).position);
+            return true;
         }
+        return super.onContextItemSelected(item);
     }
 
     @Override
@@ -133,40 +120,39 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         cursor.close();
 
-        lvPolls.setAdapter(new ArrayAdapter<>(this, R.layout.list_item_poll, R.id.tvPollName, listPollNames));
+        pollsAdapter = new ArrayAdapter<>(this, R.layout.list_item_poll, R.id.tvPollName, listPollNames);
+        lvPolls.setAdapter(pollsAdapter);
 
         checkEmpty();
     }
 
     private void addPoll() {
         final EditText etInput = new EditText(this);
-        etInput.setPadding(20, 50, 20, 30);
+        etInput.setPadding(40, 50, 40, 35);
         etInput.setHint(R.string.hint_poll_name);
 
         AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(this);
         dlgBuilder.setView(etInput);
-        dlgBuilder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String newPollName = etInput.getText().toString().trim();
-                if (!newPollName.isEmpty()) {
-                    int newPollID = DBHelper.insert(DBHelper.Polls.TABLE_NAME,
-                            new String[] {
-                                    DBHelper.Polls.COLUMN_NAME_PARENT_ID,
-                                    DBHelper.Polls.COLUMN_NAME_ITEM_NAME,
-                                    DBHelper.Polls.COLUMN_NAME_ITEM_TYPE
-                            },
-                            new String[] { "0", newPollName, String.valueOf(ListItem.ITEM_TYPE_POLL) });
+        dlgBuilder.setPositiveButton(R.string.btn_ok, (dialog, which) -> {
+            String newPollName = etInput.getText().toString().trim();
+            if (!newPollName.isEmpty()) {
+                int newPollID = DBHelper.insert(
+                        DBHelper.Polls.TABLE_NAME,
+                        new String[] {
+                                DBHelper.Polls.COLUMN_NAME_PARENT_ID,
+                                DBHelper.Polls.COLUMN_NAME_ITEM_NAME,
+                                DBHelper.Polls.COLUMN_NAME_ITEM_TYPE
+                        },
+                        new String[] { "0", newPollName, String.valueOf(ListItem.ITEM_TYPE_POLL) });
 
-                    if (newPollID > 0) {
-                        listPollIDs.add(newPollID);
-                        listPollNames.add(newPollName);
+                if (newPollID > 0) {
+                    listPollIDs.add(newPollID);
+                    listPollNames.add(newPollName);
 
-                        ((ArrayAdapter)lvPolls.getAdapter()).notifyDataSetChanged();
-                        lvPolls.smoothScrollToPosition(listPollIDs.size() - 1);
+                    pollsAdapter.notifyDataSetChanged();
+                    lvPolls.smoothScrollToPosition(listPollIDs.size() - 1);
 
-                        checkEmpty();
-                    }
+                    checkEmpty();
                 }
             }
         });
@@ -178,25 +164,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String pollName = listPollNames.get(position);
 
         final EditText etInput = new EditText(this);
-        etInput.setPadding(20, 50, 20, 30);
+        etInput.setPadding(40, 50, 40, 35);
         etInput.setHint(R.string.hint_poll_name);
         etInput.setText(pollName);
         etInput.setSelection(pollName.length());
+        etInput.requestFocus();
 
         AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(this);
         dlgBuilder.setView(etInput);
-        dlgBuilder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String newPollName = etInput.getText().toString().trim();
-                if (!newPollName.isEmpty()) {
-                    if (DBHelper.update(DBHelper.Polls.TABLE_NAME, new String[] { DBHelper.Polls.COLUMN_NAME_ITEM_NAME },
-                            new String[] { newPollName }, DBHelper.Polls._ID + "=" + listPollIDs.get(position)) > 0) {
+        dlgBuilder.setPositiveButton(R.string.btn_ok, (dialog, which) -> {
+            String newPollName = etInput.getText().toString().trim();
+            if (!newPollName.isEmpty()) {
+                if (DBHelper.update(DBHelper.Polls.TABLE_NAME, new String[] { DBHelper.Polls.COLUMN_NAME_ITEM_NAME },
+                        new String[] { newPollName }, DBHelper.Polls._ID + "=" + listPollIDs.get(position)) > 0) {
 
-                        listPollNames.set(position, newPollName);
-
-                        ((ArrayAdapter)lvPolls.getAdapter()).notifyDataSetChanged();
-                    }
+                    listPollNames.set(position, newPollName);
+                    pollsAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -208,20 +191,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         final int pollID = listPollIDs.get(position);
 
         AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(this);
-        dlgBuilder.setMessage(String.format(Locale.US, getString(R.string.txt_confirm_delete_poll), listPollNames.get(position)));
-        dlgBuilder.setPositiveButton(R.string.btn_yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (DBHelper.delete(DBHelper.Polls.TABLE_NAME, DBHelper.Polls._ID + "=" + pollID) > 0) {
-                    listPollIDs.remove(position);
-                    listPollNames.remove(position);
+        dlgBuilder.setMessage(String.format(getString(R.string.txt_confirm_delete_poll), listPollNames.get(position)));
+        dlgBuilder.setPositiveButton(R.string.btn_yes, (dialog, which) -> {
+            if (DBHelper.delete(DBHelper.Polls.TABLE_NAME, DBHelper.Polls._ID + "=" + pollID) > 0) {
+                listPollIDs.remove(position);
+                listPollNames.remove(position);
 
-                    ListItem.deleteSubItemsInDatebase(pollID);
+                ListItem.deleteSubItemsInDatebase(pollID);
+                pollsAdapter.notifyDataSetChanged();
 
-                    ((ArrayAdapter)lvPolls.getAdapter()).notifyDataSetChanged();
-
-                    checkEmpty();
-                }
+                checkEmpty();
             }
         });
         dlgBuilder.setNegativeButton(R.string.btn_no, null);
@@ -230,10 +209,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void openPoll(int position) {
         Intent intent = new Intent(MainActivity.this, PollActivity.class);
-
         intent.putExtra(PollActivity.ARG_POLL_ID, listPollIDs.get(position));
         intent.putExtra(PollActivity.ARG_POLL_NAME, listPollNames.get(position));
-
         startActivity(intent);
     }
 

@@ -9,7 +9,8 @@
         </shape>
     </item>
     <item>
-        <bitmap  android:src="@drawable/img_background_main"
+        <bitmap
+            android:src="@drawable/img_background_main"
             android:gravity="center" />
     </item>
 </layer-list>

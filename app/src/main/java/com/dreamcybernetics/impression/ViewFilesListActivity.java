@@ -3,10 +3,12 @@ package com.dreamcybernetics.impression;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,8 +23,8 @@ public class ViewFilesListActivity extends AppCompatActivity implements AdapterV
 
     private static final int REQUEST_PERMISSION_READ_FILE = 1;
 
-    String dir;
-    String[] files;
+    private String filesDir;
+    private String[] filesList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,12 +64,12 @@ public class ViewFilesListActivity extends AppCompatActivity implements AdapterV
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(this, ViewFileActivity.class);
-        intent.putExtra(ViewFileActivity.ARG_FILE_PATH, dir + File.separator + files[position]);
+        intent.putExtra(ViewFileActivity.ARG_FILE_PATH, filesDir + File.separator + filesList[position]);
         startActivity(intent);
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_PERMISSION_READ_FILE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 loadFilesList();
@@ -78,22 +80,22 @@ public class ViewFilesListActivity extends AppCompatActivity implements AdapterV
     }
 
     private void loadFilesList() {
-        dir = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + getString(R.string.app_name);
-        files = (new File(dir)).list();
+        filesDir = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + getString(R.string.app_name);
+        filesList = (new File(filesDir)).list();
 
-        if (files == null) {
+        if (filesList == null) {
             return;
         }
 
         //reverse
-        for (int i = 0; i < files.length / 2; i++) {
-            String temp = files[i];
-            files[i] = files[files.length - i - 1];
-            files[files.length - i - 1] = temp;
+        for (int i = 0; i < filesList.length / 2; i++) {
+            String temp = filesList[i];
+            filesList[i] = filesList[filesList.length - i - 1];
+            filesList[filesList.length - i - 1] = temp;
         }
 
-        ListView lvFiles = (ListView)findViewById(R.id.lvFiles);
+        ListView lvFiles = findViewById(R.id.lvFiles);
         lvFiles.setOnItemClickListener(this);
-        lvFiles.setAdapter(new ArrayAdapter<>(this, R.layout.list_item_view_files, R.id.tvFileName, files));
+        lvFiles.setAdapter(new ArrayAdapter<>(this, R.layout.list_item_view_files, R.id.tvFileName, filesList));
     }
 }

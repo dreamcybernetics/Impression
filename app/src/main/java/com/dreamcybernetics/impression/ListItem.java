@@ -9,9 +9,9 @@ public class ListItem {
     public static final byte ITEM_TYPE_QUESTION = 1;
     public static final byte ITEM_TYPE_OPTION = 2;
 
-    private int _id;
+    private final int _id;
     private String _text;
-    private ArrayList<ListItem> _subItems;
+    private final ArrayList<ListItem> _subItems;
 
     public ListItem(int id, String text, ArrayList<ListItem> subItems) {
         _id = id;
@@ -39,8 +39,8 @@ public class ListItem {
         _subItems.add(subItem);
     }
 
-    public static void deleteSubItemsInDatebase(int itemID) {
-        String criteria = DBHelper.Polls.COLUMN_NAME_PARENT_ID + "=" + itemID;
+    public static void deleteSubItemsInDatebase(int itemId) {
+        String criteria = DBHelper.Polls.COLUMN_NAME_PARENT_ID + "=" + itemId;
 
         Cursor cursor = DBHelper.select(DBHelper.Polls.TABLE_NAME, new String[] { DBHelper.Polls._ID }, criteria);
 
