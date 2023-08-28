@@ -110,6 +110,7 @@ public class ViewFileActivity extends AppCompatActivity {
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
+            finish();
         }
     }
 

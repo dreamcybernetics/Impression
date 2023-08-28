@@ -46,7 +46,7 @@ public class ViewFilesListActivity extends AppCompatActivity implements AdapterV
             loadFilesList();
         } else {
             ActivityCompat.requestPermissions(this,
-                    new String[] { android.Manifest.permission.WRITE_EXTERNAL_STORAGE },
+                    new String[] { android.Manifest.permission.READ_EXTERNAL_STORAGE },
                     REQUEST_PERMISSION_READ_FILE);
         }
     }
@@ -70,6 +70,7 @@ public class ViewFilesListActivity extends AppCompatActivity implements AdapterV
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_PERMISSION_READ_FILE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 loadFilesList();
